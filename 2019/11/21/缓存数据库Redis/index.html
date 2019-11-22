@@ -1,0 +1,399 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>缓存数据库Redis | RhubarbC的博客</title><meta name="description" content="关于Redis的个人学习心得！本文将学习怎么用python操作Redis"><meta name="keywords" content="python,缓存数据库,Redis"><meta name="author" content="Rhubarb C"><meta name="copyright" content="Rhubarb C"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="canonical" href="http://yoursite.com/2019/11/21/%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93Redis/"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="缓存数据库Redis"><meta name="twitter:description" content="关于Redis的个人学习心得！本文将学习怎么用python操作Redis"><meta name="twitter:image" content="http://yoursite.com/img/cover_default3.jpg"><meta property="og:type" content="article"><meta property="og:title" content="缓存数据库Redis"><meta property="og:url" content="http://yoursite.com/2019/11/21/%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93Redis/"><meta property="og:site_name" content="RhubarbC的博客"><meta property="og:description" content="关于Redis的个人学习心得！本文将学习怎么用python操作Redis"><meta property="og:image" content="http://yoursite.com/img/cover_default3.jpg"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="prev" title="Celery" href="http://yoursite.com/2019/11/21/Celery/"><link rel="next" title="Tornado框架进阶" href="http://yoursite.com/2019/11/19/Tornado%E6%A1%86%E6%9E%B6%E8%BF%9B%E9%98%B6/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"https://deehuang.github.io/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  highlight_copy: 'true',
+  highlight_lang: 'true',
+  highlight_shrink: 'false',
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    title: '添加书签',
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  copyright: {"languages":{"author":"作者: Rhubarb C","link":"链接: http://yoursite.com/2019/11/21/%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93Redis/","source":"来源: RhubarbC的博客","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  copy_copyright_js: true
+  
+}</script></head><body><canvas class="fireworks"></canvas><div id="header"> <div id="page-header"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">RhubarbC的博客</a></span><i class="fa fa-bars fa-fw toggle-menu pull-right close" aria-hidden="true"></i><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><script>document.body.addEventListener('touchstart', function(){ });</script></div></span><span class="pull-right" id="search_button"></span></div></div><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="lozad avatar_img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'"></div><div class="mobile_post_data"><div class="mobile_data_item is_center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">12</div></a></div></div><div class="mobile_data_item is_center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">22</div></a></div></div><div class="mobile_data_item is_center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">8</div></a></div></div></div><hr><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><script>document.body.addEventListener('touchstart', function(){ });</script></div></div><div id="mobile-sidebar-toc"><div class="toc_mobile_headline">目录</div><ol class="toc_mobile_items"><li class="toc_mobile_items-item toc_mobile_items-level-1"><a class="toc_mobile_items-link" href="#缓存数据库介绍"><span class="toc_mobile_items-number">1.</span> <span class="toc_mobile_items-text">缓存数据库介绍</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#NoSQL"><span class="toc_mobile_items-number">1.1.</span> <span class="toc_mobile_items-text">NoSQL</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#NoSQL数据库的四大分类："><span class="toc_mobile_items-number">1.2.</span> <span class="toc_mobile_items-text">NoSQL数据库的四大分类：</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#键值-Key-Value-存储数据库"><span class="toc_mobile_items-number">1.2.1.</span> <span class="toc_mobile_items-text">键值(Key-Value)存储数据库</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#列存储数据库"><span class="toc_mobile_items-number">1.2.2.</span> <span class="toc_mobile_items-text">列存储数据库</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#文档型数据库"><span class="toc_mobile_items-number">1.2.3.</span> <span class="toc_mobile_items-text">文档型数据库</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#图形-Graph-数据库"><span class="toc_mobile_items-number">1.2.4.</span> <span class="toc_mobile_items-text">图形(Graph)数据库</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#NoSQL数据库的四大分类表格分析"><span class="toc_mobile_items-number">1.2.5.</span> <span class="toc_mobile_items-text">NoSQL数据库的四大分类表格分析</span></a></li></ol></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-1"><a class="toc_mobile_items-link" href="#Redis"><span class="toc_mobile_items-number">2.</span> <span class="toc_mobile_items-text">Redis</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#redis介绍"><span class="toc_mobile_items-number">2.1.</span> <span class="toc_mobile_items-text">redis介绍</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#优点"><span class="toc_mobile_items-number">2.2.</span> <span class="toc_mobile_items-text">优点</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#安装"><span class="toc_mobile_items-number">2.3.</span> <span class="toc_mobile_items-text">安装</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#Redis的使用"><span class="toc_mobile_items-number">2.4.</span> <span class="toc_mobile_items-text">Redis的使用</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#连接方式"><span class="toc_mobile_items-number">2.4.1.</span> <span class="toc_mobile_items-text">连接方式</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#操作"><span class="toc_mobile_items-number">2.4.2.</span> <span class="toc_mobile_items-text">操作</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-4"><a class="toc_mobile_items-link" href="#string操作"><span class="toc_mobile_items-number">2.4.2.1.</span> <span class="toc_mobile_items-text">string操作</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#Hash操作"><span class="toc_mobile_items-number">2.4.3.</span> <span class="toc_mobile_items-text">Hash操作</span></a></li></ol></li><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#List操作"><span class="toc_mobile_items-number">2.5.</span> <span class="toc_mobile_items-text">List操作</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#set集合操作"><span class="toc_mobile_items-number">2.5.1.</span> <span class="toc_mobile_items-text">set集合操作</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#redis其他常用操作"><span class="toc_mobile_items-number">2.5.2.</span> <span class="toc_mobile_items-text">redis其他常用操作</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#管道"><span class="toc_mobile_items-number">2.5.3.</span> <span class="toc_mobile_items-text">管道</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#发布订阅"><span class="toc_mobile_items-number">2.5.4.</span> <span class="toc_mobile_items-text">发布订阅</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#补充：redis的定期持久化"><span class="toc_mobile_items-number">2.5.5.</span> <span class="toc_mobile_items-text">补充：redis的定期持久化</span></a></li></ol></li></ol></li></ol></div></div><div id="body-wrap"><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true">     </i><div class="auto_open" id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#缓存数据库介绍"><span class="toc-number">1.</span> <span class="toc-text">缓存数据库介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#NoSQL"><span class="toc-number">1.1.</span> <span class="toc-text">NoSQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NoSQL数据库的四大分类："><span class="toc-number">1.2.</span> <span class="toc-text">NoSQL数据库的四大分类：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#键值-Key-Value-存储数据库"><span class="toc-number">1.2.1.</span> <span class="toc-text">键值(Key-Value)存储数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#列存储数据库"><span class="toc-number">1.2.2.</span> <span class="toc-text">列存储数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文档型数据库"><span class="toc-number">1.2.3.</span> <span class="toc-text">文档型数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#图形-Graph-数据库"><span class="toc-number">1.2.4.</span> <span class="toc-text">图形(Graph)数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NoSQL数据库的四大分类表格分析"><span class="toc-number">1.2.5.</span> <span class="toc-text">NoSQL数据库的四大分类表格分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis"><span class="toc-number">2.</span> <span class="toc-text">Redis</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#redis介绍"><span class="toc-number">2.1.</span> <span class="toc-text">redis介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优点"><span class="toc-number">2.2.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-number">2.3.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis的使用"><span class="toc-number">2.4.</span> <span class="toc-text">Redis的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#连接方式"><span class="toc-number">2.4.1.</span> <span class="toc-text">连接方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#操作"><span class="toc-number">2.4.2.</span> <span class="toc-text">操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#string操作"><span class="toc-number">2.4.2.1.</span> <span class="toc-text">string操作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hash操作"><span class="toc-number">2.4.3.</span> <span class="toc-text">Hash操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#List操作"><span class="toc-number">2.5.</span> <span class="toc-text">List操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#set集合操作"><span class="toc-number">2.5.1.</span> <span class="toc-text">set集合操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redis其他常用操作"><span class="toc-number">2.5.2.</span> <span class="toc-text">redis其他常用操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#管道"><span class="toc-number">2.5.3.</span> <span class="toc-text">管道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#发布订阅"><span class="toc-number">2.5.4.</span> <span class="toc-text">发布订阅</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#补充：redis的定期持久化"><span class="toc-number">2.5.5.</span> <span class="toc-text">补充：redis的定期持久化</span></a></li></ol></li></ol></li></ol></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/cover_default3.jpg)"><div id="post-info"><div id="post-title"><div class="posttitle">缓存数据库Redis</div></div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2019-11-21<span class="post-meta__separator">|</span><i class="fa fa-history" aria-hidden="true"></i> 更新于 2019-11-23</time><span class="post-meta__separator mobile_hidden">|</span><span class="mobile_hidden"><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93Redis/">缓存数据库Redis</a></span><div class="post-meta-wordcount"><span>字数总计: </span><span class="word-count">7.7k</span><span class="post-meta__separator">|</span><span>阅读时长: 26 分钟</span><span class="post-meta__separator">|</span><span>阅读量: </span><span id="busuanzi_value_page_pv"></span></div></div></div></div><div class="layout layout_post" id="content-inner">   <article id="post"><div class="article-container" id="post-content"><h1 id="缓存数据库介绍"><a href="#缓存数据库介绍" class="headerlink" title="缓存数据库介绍"></a>缓存数据库介绍</h1><h2 id="NoSQL"><a href="#NoSQL" class="headerlink" title="NoSQL"></a>NoSQL</h2><p>缓存数据库也叫<u>NoSQL</u>(NoSQL = Not Only SQL )，意即“不仅仅是SQL”，泛指非关系型的数据库。<br>之所以叫缓存数据库是因为数据是储存在缓存里和非硬盘上的，所以访问速度非常快。故缓存数据库的作用就是为了提高访问速度！</p>
+<p>关系型数据库和非关系型数据库的区别</p>
+<ul>
+<li>关系型数据库：强调的是表与表之间有各种关系。是储存在硬盘上的。它一般存储的是一些有关系有严格规则的数据（存储数据类型是事先严格规定好的）</li>
+<li>非关系型数据库：是存储在缓存里的。可以存储不一致不规则的数据。像是社交网络数据（如微博微信等数据都是用户自己生成的数据），我们没法确定用户会生成什么数据，可能是发表了一篇文章，一首歌，一段视频。那么这些不确定类型的数据使用关系型数据库来存储就显得力不从心。NOSQL数据库为了解决这类多重数据类型的大规模数据带来的存储问题。</li>
+</ul>
+<h2 id="NoSQL数据库的四大分类："><a href="#NoSQL数据库的四大分类：" class="headerlink" title="NoSQL数据库的四大分类："></a>NoSQL数据库的四大分类：</h2><h3 id="键值-Key-Value-存储数据库"><a href="#键值-Key-Value-存储数据库" class="headerlink" title="键值(Key-Value)存储数据库"></a>键值(Key-Value)存储数据库</h3><p>像是python中的字典的存储方式，只要创建一个Key后面对应一个value，取值的时候通过key取。</p>
+<p>这一类数据库主要会使用到一个<a href="http://baike.baidu.com/view/329976.htm" target="_blank" rel="noopener">哈希表</a>，这个表中有一个特定的键和一个指针指向特定的数据。Key/value模型对于IT系统来说的优势在于简单、易部署。但是如果<a href="http://baike.baidu.com/subview/67156/5112091.htm" target="_blank" rel="noopener">DBA</a>只对部分值进行查询或更新的时候，Key/value就显得效率低下了。[3] 举例如：Redis,Tokyo Cabinet/Tyrant,  Voldemort, Oracle BDB. </p>
+<h3 id="列存储数据库"><a href="#列存储数据库" class="headerlink" title="列存储数据库"></a>列存储数据库</h3><p>这部分数据库通常是用来应对分布式存储的海量数据。键仍然存在，但是它们的特点是指向了多个列。这些列是由列家族来安排的，查询<u>海量</u>数据的速度是相当的快。如：Cassandra, HBase, Riak. </p>
+<h3 id="文档型数据库"><a href="#文档型数据库" class="headerlink" title="文档型数据库"></a>文档型数据库</h3><p>文档型数据库的灵感是来自于Lotus Notes办公软件的，而且它同第一种键值存储相类似。该类型的数据模型是版本化的文档，半结构化的文档以特定的格式存储，比如JSON。<u>文档型数据库可以看作是键值数据库的升级版</u>，允许之间嵌套键值。而且文档型数据库比键值数据库的查询效率更高。如：CouchDB, MongoDb. 国内也有文档型数据库SequoiaDB，已经开源。 </p>
+<h3 id="图形-Graph-数据库"><a href="#图形-Graph-数据库" class="headerlink" title="图形(Graph)数据库"></a>图形(Graph)数据库</h3><p>图形结构的数据库同其他行列以及刚性结构的SQL数据库不同，它是使用灵活的图形模型，并且能够扩展到多个服务器上。NoSQL数据库没有标准的查询语言(SQL)，因此进行数据库查询需要制定数据模型。许多NoSQL数据库都有REST式的数据接口或者查询API。[2] 如：Neo4J, InfoGrid, Infinite Graph.</p>
+<h3 id="NoSQL数据库的四大分类表格分析"><a href="#NoSQL数据库的四大分类表格分析" class="headerlink" title="NoSQL数据库的四大分类表格分析"></a>NoSQL数据库的四大分类表格分析</h3><table>
+<thead>
+<tr>
+<th align="left">分类</th>
+<th>Examples举例</th>
+<th>典型应用场景</th>
+<th>数据模型</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">键值（key-value）</td>
+<td>Tokyo Cabinet/Tyrant, Redis, Voldemort, Oracle BDB</td>
+<td>内容缓存，主要用于处理大量数据的高访问负载，也用于一些日志系统等等。</td>
+<td>Key 指向 Value 的键值对，通常用hash table来实现</td>
+<td>查找速度快</td>
+<td>数据无结构化，通常只被当作字符串或者二进制数据</td>
+</tr>
+<tr>
+<td align="left">列存储数据库</td>
+<td>Cassandra, HBase, Riak</td>
+<td>分布式的文件系统</td>
+<td>以列簇式存储，将同一列数据存在一起</td>
+<td>查找速度快，可扩展性强，更容易进行分布式扩展</td>
+<td>功能相对局限</td>
+</tr>
+<tr>
+<td align="left">文档型数据库</td>
+<td>CouchDB, MongoDb</td>
+<td>Web应用（与Key-Value类似，Value是结构化的，不同的是数据库能够了解Value的内容）</td>
+<td>Key-Value对应的键值对，Value为结构化数据</td>
+<td>数据结构要求不严格，表结构可变，不需要像关系型数据库一样需要预先定义表结构</td>
+<td>查询性能不高，而且缺乏统一的查询语法。</td>
+</tr>
+<tr>
+<td align="left">图形(Graph)数据库</td>
+<td>Neo4J, InfoGrid, Infinite Graph</td>
+<td>社交网络，推荐系统等。专注于构建关系图谱</td>
+<td>图结构</td>
+<td>利用图结构相关算法。比如最短路径寻址，N度关系查找等</td>
+<td>很多时候需要对整个图做计算才能得出需要的信息，而且这种结构不太好做分布式的集群方案。</td>
+</tr>
+</tbody></table>
+<p>总结NoSQL数据库在以下的这几种情况下比较适用：<br>1、数据模型比较简单；<br>2、需要灵活性更强的IT系统；<br>3、对数据库性能要求较高；<br>4、不需要高度的数据一致性；<br>5、对于给定key，比较容易映射复杂值的环境。</p>
+<h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><h2 id="redis介绍"><a href="#redis介绍" class="headerlink" title="redis介绍"></a>redis介绍</h2><p>redis是业界主流的key-value nosql 数据库之一。<br>和Memcached类似，它支持存储的value类型相对更多，包括string(字符串)、list(<a href="http://baike.baidu.com/view/549479.htm" target="_blank" rel="noopener">链表</a>)、set(集合)、zset(sorted set –有序集合)和hash（哈希类型）。这些<a href="http://baike.baidu.com/view/675645.htm" target="_blank" rel="noopener">数据类型</a>都支持push/pop、add/remove（增删改查）及取交集并集和差集及更丰富的操作，而且这些操作都是原子性的（体现了数据安全性，多个用户不能同时操作一个数据）。<br>redis支持各种不同方式的排序。与memcached一样，为了保证效率，数据都是缓存在内存中。区别的是redis会周期性的把<u>更新的数据写入磁盘</u>（保证数据的持久化：死机了数据不会丢）或者把修改操作写入追加的记录文件，并且在此基础上实现了master-slave(主从)同步。 </p>
+<p>思考：redis是把数据放到内存，而我们的后端程序如django也有自己的内存空间放数据，那我们为什么还要用redis？<br>首先redis提供了数据持久化的功能，django的内存数据是没法持久化的。其次是因为我们的服务器可能并不单单只有Django提供服务，还有可能是java的web框架一块提供服务，这两个进程无法访问彼此的内存空间，就没法取到彼此想要的数据。把数据存到redis里面，大家就都可以从里面拿数据实现了数据的共享。</p>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ul>
+<li><p>异常快速 : <strong>Redis是非常快的</strong>，每秒可以执行大约110000设置操作（mysql可能每秒1000条数据都插入不进去，你说是有多么快），81000个/每秒的读取操作。</p>
+</li>
+<li><p>支持丰富的数据类型 : Redis支持最大多数开发人员已经知道如列表，集合，可排序集合，哈希等数据类型。</p>
+<p>这使得在应用中很容易解决的各种问题，因为我们知道哪些问题处理使用哪种数据类型更好解决。</p>
+</li>
+<li><p>操作都是原子的 : 所有 Redis 的操作都是原子（保证数据安全），从而确保当两个客户同时访问 Redis 服务器得到的是更新后的值（最新值）。</p>
+</li>
+<li><p>MultiUtility工具：Redis是一个多功能实用工具，可以在很多如：缓存，消息传递队列中使用（自己可以当消息队列：Redis原生支持发布/订阅），在应用程序中，如：Web应用程序会话，网站页面点击数等任何短暂的数据；</p>
+</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">安装Redis环境</span><br><span class="line">要在 Ubuntu 上安装 Redis，打开终端，然后输入以下命令：</span><br><span class="line">$sudo apt-get update    #更新下载软件包库</span><br><span class="line">$sudo apt-get install redis-server  </span><br><span class="line">这将在您的计算机上安装Redis</span><br><span class="line"></span><br><span class="line">启动 Redis</span><br><span class="line">$redis-server</span><br><span class="line"></span><br><span class="line">打开新的终端连接redis来查看 redis 是否还在运行</span><br><span class="line">$redis-cli  #连接redis</span><br><span class="line"></span><br><span class="line">这将打开一个 Redis 提示符，如下图所示：</span><br><span class="line">redis 127.0.0.1:6379&gt;</span><br><span class="line">在上面的提示信息中：127.0.0.1 是本机的IP地址，6379是 Redis 服务器运行的端口。现在输入 PING 命令，如下图所示：</span><br><span class="line">redis 127.0.0.1:6379&gt; ping</span><br><span class="line">PONG</span><br><span class="line">这说明现在你已经成功地在计算机上安装了 Redis。</span><br><span class="line"></span><br><span class="line">在Ubuntu上安装Redis桌面管理器</span><br><span class="line">要在Ubuntu 上安装 Redis桌面管理，可以从 http://redisdesktop.com/download 下载包并安装它。</span><br><span class="line">Redis 桌面管理器会给你用户界面来管理 Redis 键和数据。</span><br></pre></td></tr></table></figure>
+
+<p>python环境操作Redis:<br>下载redis-py模块：<code>pip install redis</code></p>
+<p>接下来学习怎么用python去操作Redis，实际上就是去学习redis-py模块提供给我们的API的使用</p>
+<h2 id="Redis的使用"><a href="#Redis的使用" class="headerlink" title="Redis的使用"></a>Redis的使用</h2><p>整个Redis是一个key-value的结构，所以我们存数据的时候要设定Key，取值的时候要使用Key</p>
+<p>redis-py 的API的使用可以分类为：</p>
+<ul>
+<li>连接方式</li>
+<li>连接池</li>
+<li>操作<ul>
+<li>String 操作</li>
+<li>Hash 操作</li>
+<li>List 操作</li>
+<li>Set 操作</li>
+<li>Sort Set 操作</li>
+</ul>
+</li>
+<li>管道</li>
+<li>发布订阅</li>
+</ul>
+<h3 id="连接方式"><a href="#连接方式" class="headerlink" title="连接方式"></a>连接方式</h3><p>PS：要远程连接redis，需要给redis设置密码验证并且给bind改成0.0.0.0：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">打开redis的配置文件</span><br><span class="line">vim /etc/redis.conf</span><br><span class="line">找到 </span><br><span class="line">#requirepass foobared</span><br><span class="line">bind 127.0.0.1   #默认是中这个表示只接收本机的链接</span><br><span class="line"></span><br><span class="line">去掉行前的注释，并修改密码为所需的密码</span><br><span class="line">requirepass woshimima</span><br><span class="line"></span><br><span class="line">改成0.0.0.0表示允许所有地址访问，保存</span><br><span class="line">bind 0.0.0.0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">重启redis</span><br><span class="line">sudo service redis restart</span><br><span class="line">或</span><br><span class="line">/etc/init.d/redis-server restart #重启的服务放在了inid.d中</span><br><span class="line"></span><br><span class="line">设置了redis验证密码后，连接使用就需要密码了，在原生redis中使用命令auth去验证密码，如：</span><br><span class="line">redis-cli 连接redis</span><br><span class="line">auth woshimima   验证密码</span><br></pre></td></tr></table></figure>
+
+<p>1、操作模式:<br>redis-py提供两个类Redis和StrictRedis用于实现Redis的命令，StrictRedis用于实现大部分官方的命令，并使用官方的语法和命令，Redis是StrictRedis的子类，用于向后兼容旧版本的redis-py。 </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> redis</span><br><span class="line">  </span><br><span class="line">r = redis.Redis(host=<span class="string">'10.211.55.4'</span>, port=<span class="number">6379</span>,db=<span class="number">0</span>,password=<span class="string">'woshimima'</span>)</span><br><span class="line">r.set(<span class="string">'foo'</span>, <span class="string">'Bar'</span>) <span class="comment">#设值</span></span><br><span class="line"><span class="keyword">print</span> r.get(<span class="string">'foo'</span>) <span class="comment">#获取值</span></span><br></pre></td></tr></table></figure>
+
+<p>2、连接池：<br> redis-py使用connection pool来管理对一个redis server的所有连接，避免每次建立、释放连接的开销。默认，每个Redis实例都会维护一个自己的连接池。可以直接建立一个连接池，然后作为参数Redis，这样就可以实现多个Redis实例共享一个连接池。 </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> redis</span><br><span class="line"> </span><br><span class="line">pool = redis.ConnectionPool(host=<span class="string">'10.211.55.4'</span>, port=<span class="number">6379</span>)</span><br><span class="line"> </span><br><span class="line">r = redis.Redis(connection_pool=pool)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>PS：redis-py每执行一条命令如：r.set。都会向redis连接一次，使用连接池虽然可以在一定程度上节省资源开销，但是也不是最高效的办法。redis提供了管道功能来让我们在一次连接中执行多条命令！管道的使用我们下面了解完redis的数据类型常用命令后再做介绍！</p>
+<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><h4 id="string操作"><a href="#string操作" class="headerlink" title="string操作"></a>string操作</h4><p> redis中的String在在内存中按照一个name对应一个value来存储。如图： </p>
+<p><img alt data-src="/2019/11/21/%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93Redis/1.jpg" class="lozad"></p>
+<p><strong>原生redis的String操作命令</strong>：</p>
+<ol>
+<li><p><code>set key vlaue [EX] [PX] [NX XX]</code><br>在Redis中设置值，默认是不存在则创建，存在则修改<br>EX设置超时时间：set name value ex 3 ：给键值对设置3秒超时时间，超时后删除key-value<br>PX也是设置超时时间，但是单位是毫秒<br>NX：set key value NX：键值对不存在则创建，存在则不执行set（不设置NX和XX的情况下默认是修改）<br>XX：set key value XX：与NX相反，存在的时候修改，不存在的时候不执行set</p>
+</li>
+<li><p><code>setnx key seconds value</code><br>在Redis设置值，就等于`set name value NX</p>
+</li>
+<li><p><code>setex key seconds value</code>和<code>psetex key time_ms value</code><br>在Redis设置值附带过期时间，前者是s后者是ms后失效。就等于<code>set name value ex 3</code>和<code>set name value px 3</code></p>
+</li>
+<li><p><code>mset key1 value1 key2 value2 key3 value3</code><br>批量设置</p>
+</li>
+<li><p><code>keys *</code><br>查看所有在redis已经存在的key</p>
+</li>
+<li><p><code>get key</code><br>根据key取值</p>
+</li>
+<li><p><code>mget key1 key2 key3</code><br>批量获取</p>
+</li>
+<li><p><code>getset key value</code><br>在redis设置新值并获取它，即先set再get二合一美滋滋</p>
+</li>
+<li><p><code>getrange key start end</code><br>获取切片值（根据字节获取，非字符），就是切片操作但是切的是字节！允许反向取(负数切)<br>如”大黄”中文字符在Utf8占3个字节，故getrange name 0 3取到”大”</p>
+</li>
+<li><p><code>setrange key offset value</code><br>修改字符串内容，从指定字符串索引开始向后替换（新值太长时，则向后覆盖）<br>参数：</p>
+<pre><code>offset，字符串的索引，字节（一个汉字三个字节）
+value，要设置的值</code></pre></li>
+<li><p><code>setbit key offet value</code><br> 对key对应值的二进制表示(0或1)的位进行操作，如果新值太长，则往后覆盖<br>参数：<br>offet不是字符索引而是位索引，而是把字符串变成字节后的第几位！<br>value：只能是二进制（0或1）</p>
+</li>
+<li><p><code>getbit key offet</code><br>获取key对应的值的二进制表示中的offet位的值 （0或1） </p>
+</li>
+<li><p><code>bitcount key [start] [end]</code><br>获取name对应的值的二进制表示中 1 的个数<br>参数：</p>
+<pre><code>key，Redis的name
+start，位起始位置
+end，位结束位置</code></pre><p>位操作可以最大程度的节省内存空间，最常用的例子就是统计在线的用户人数<br><img alt data-src="/2019/11/21/%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93Redis/2.jpg" class="lozad"></p>
+</li>
+<li><p><code>strlen key</code><br>返回key 对应值的字节长度（一个汉字三个长度）</p>
+</li>
+<li><p><code>incr key</code><br>自增 key对应的值（只能自增1）</p>
+</li>
+<li><p><code>incrbyfloat key amount</code></p>
+<p>自增 name对应的值，当name不存在时，则创建name＝amount，否则，则自增。<br>参数：</p>
+<pre><code>name,Redis的name
+amount,自增数（浮点型）</code></pre></li>
+<li><p><code>decr name</code><br>自减 key对应的值（只能减1，并且不能值是浮点数）</p>
+</li>
+<li><p><code>apend key value</code><br>在key对应的值后面追加字符串</p>
+</li>
+</ol>
+<p><strong>redis-py中String的API</strong>：</p>
+<ol>
+<li><p><code>set(name, value, ex=None, px=None, nx=False, xx=False)</code><br>在Redis中设置值，默认，不存在则创建，存在则修改<br>参数：</p>
+<pre><code>ex，过期时间（秒）
+px，过期时间（毫秒）
+nx，如果设置为True，则只有name不存在时，当前set操作才执行
+xx，如果设置为True，则只有name存在时，当前set操作才执行</code></pre></li>
+<li><p><code>setnx(name, value)</code><br>设置值，只有name不存在时，执行设置操作（添加） </p>
+</li>
+<li><p><code>setex(name, value, time)</code><br>设置值<br> 参数：</p>
+<pre><code>time，过期时间（数字秒 或 timedelta对象）</code></pre></li>
+<li><p><code>psetex(name, time_ms, value)</code><br>设置值<br>参数：</p>
+<pre><code>time_ms，过期时间（数字毫秒 或 timedelta对象）</code></pre></li>
+<li><p><code>mset(*args, **kwargs)</code><br>批量设置值<br>如：<br>   mset(k1=’v1’, k2=’v2’)<br>   或<br>   mset({‘k1’: ‘v1’, ‘k2’: ‘v2’})</p>
+</li>
+<li><p><code>get(name)</code><br>获取值 </p>
+</li>
+<li><p><code>mget(keys, *args)</code><br>批量获取<br>如：<br>   mget(‘name’, ‘age’)<br>   或<br>   r.mget([‘name’, ‘age’])</p>
+</li>
+<li><p><code>getset(name, value)</code><br>设置新值并获取原来的值 </p>
+</li>
+<li><p><code>getrange(key, start, end)</code><br> 获取子序列（根据字节获取，非字符）<br> 参数：</p>
+<pre><code>name，Redis 的 name
+start，起始位置（字节）
+end，结束位置（字节）</code></pre><p> 如： “大黄” ，0-3表示 “大”</p>
+</li>
+<li><p><code>setrange(name, offset, value)</code><br>修改字符串内容，从指定字符串索引开始向后替换（新值太长时，则向后添加）<br>参数：<br>   offset，字符串的索引，字节（一个汉字三个字节）<br>   value，要设置的值</p>
+</li>
+<li><p><code>setbit(name, offset, value)</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 对name对应值的二进制表示的位进行操作</span></span><br><span class="line"><span class="comment"># 参数：</span></span><br><span class="line">    <span class="comment"># name，redis的name</span></span><br><span class="line">    <span class="comment"># offset，位的索引（将值变换成二进制后再进行索引）</span></span><br><span class="line">    <span class="comment"># value，值只能是 1 或 0</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 注：如果在Redis中有一个对应： n1 = "foo"，</span></span><br><span class="line">        那么字符串foo的二进制表示为：<span class="number">01100110</span> <span class="number">01101111</span> <span class="number">01101111</span></span><br><span class="line">    所以，如果执行 setbit(<span class="string">'n1'</span>, <span class="number">7</span>, <span class="number">1</span>)，则就会将第<span class="number">7</span>位设置为<span class="number">1</span>，</span><br><span class="line">        那么最终二进制则变成 <span class="number">01100111</span> <span class="number">01101111</span> <span class="number">01101111</span>，即：<span class="string">"goo"</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># 扩展，转换二进制表示：</span></span><br><span class="line">    <span class="comment"># source = "大帅黄"</span></span><br><span class="line">    source = <span class="string">"foo"</span></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> source:</span><br><span class="line">        num = ord(i)</span><br><span class="line">        <span class="keyword">print</span> bin(num).replace(<span class="string">'b'</span>,<span class="string">''</span>)</span><br><span class="line"> </span><br><span class="line">    特别的，如果source是汉字 <span class="string">"大帅黄"</span>怎么办？</span><br><span class="line">    答：对于utf<span class="number">-8</span>，每一个汉字占 <span class="number">3</span> 个字节，那么 <span class="string">"大帅黄"</span> 则有 <span class="number">9</span>个字节</span><br><span class="line">       对于汉字，<span class="keyword">for</span>循环时候会按照“字节”迭代，那么在迭代时，将每一个字节转换十进制数，然后再将十进制数转换成二进制</span><br><span class="line"><span class="number">11100101</span> <span class="number">10100100</span> <span class="number">10100111</span> <span class="number">11100101</span> <span class="number">10111000</span> <span class="number">10000101</span> <span class="number">11101001</span> <span class="number">10111011</span> <span class="number">10000100</span></span><br><span class="line">-------------------------- -------------------------- -----------------------------</span><br><span class="line">           大                          帅                            黄</span><br></pre></td></tr></table></figure>
+
+<p>*用途举例，用最省空间的方式，存储在线用户数及分别是哪些用户在线 </p>
+</li>
+<li><p><code>getbit(name, offset)</code><br> 获取name对应的值的二进制表示中的某位的值 （0或1） </p>
+</li>
+<li><p><code>bitcount(key, start=None, end=None)</code><br>获取name对应的值的二进制表示中 1 的个数<br>参数：</p>
+<pre><code>key，Redis的name
+start，位起始位置
+end，位结束位置</code></pre></li>
+<li><p><code>strlen(name)</code><br> 返回name对应值的字节长度（一个汉字3个字节） </p>
+</li>
+<li><p><code>incr(self, name, amount=1)</code><br>自增 name对应的值，当name不存在时，则创建name＝amount，否则，则自增。<br>参数：</p>
+<pre><code>name,Redis的name
+amount,自增数（必须是整数）</code></pre><p><em>ps：同incrby</em></p>
+</li>
+<li><p><code>incrbyfloat(self, name, amount=1.0)</code><br>自增 name对应的值，当name不存在时，则创建name＝amount，否则，则自增。<br>参数：<br>   name,Redis的name<br>   amount,自增数（浮点型）</p>
+</li>
+<li><p><code>decr(self, name, amount=1)</code><br>自减 name对应的值，当name不存在时，则创建name＝amount，否则，则自减。<br>参数：</p>
+<pre><code>name,Redis的name
+amount,自减数（整数）</code></pre></li>
+<li><p><code>append(key, value)</code><br>在redis name对应的值后面追加内容<br>参数：</p>
+<pre><code>key, redis的name
+value, 要追加的字符串</code></pre></li>
+</ol>
+<h3 id="Hash操作"><a href="#Hash操作" class="headerlink" title="Hash操作"></a>Hash操作</h3><p> hash表现形式上有些像pyhton中的dict,可以存储一组关联性较强的数据！。就是key对应的值是一个小字典 ， redis中Hash在内存中的存储格式如下图：<br><img alt data-src="/2019/11/21/%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93Redis/3.jpg" class="lozad"></p>
+<p><strong>原生redis的Hash操作命令</strong>：</p>
+<p>通过string可以看出redis-py的操作都是参考原生进行的，所以看下面的API就可以大概知道原生redis怎么写</p>
+<p><strong>redis-py中Hash的API</strong>：</p>
+<ol>
+<li><code>hset(name, key, value)</code><br>name对应的hash中设置一个键值对（不存在，则创建；否则，修改）<br>参数：<br>   name，redis的name<br>   key，name对应的hash中的key<br>   value，name对应的hash中的value<br>注：<br>   hsetnx(name, key, value),当name对应的hash中不存在当前key时则创建（相当于添加）</li>
+<li><code>hmset(name, mapping)</code><br>在name对应的hash中批量设置键值对<br>参数：<pre><code>name，redis的name
+mapping，字典，如：{&apos;k1&apos;:&apos;v1&apos;, &apos;k2&apos;: &apos;v2&apos;}</code></pre>如：<pre><code>r.hmset(&apos;xx&apos;, {&apos;k1&apos;:&apos;v1&apos;, &apos;k2&apos;: &apos;v2&apos;})</code></pre></li>
+<li><code>hget(name,key)</code><br> 在name对应的hash中获取根据key获取value </li>
+<li><code>hmget(name, keys, *args)</code><br>在name对应的hash中获取多个key的值<br>参数：<pre><code>name，reids对应的name
+keys，要获取key集合，如：[&apos;k1&apos;, &apos;k2&apos;, &apos;k3&apos;]
+*args，要获取的key，如：k1,k2,k3</code></pre>如：<br>   r.mget(‘xx’, [‘k1’, ‘k2’])<pre><code>或
+print r.hmget(&apos;xx&apos;, &apos;k1&apos;, &apos;k2&apos;)</code></pre></li>
+<li><code>hgetall(name)</code><br>获取name对应hash的所有键值</li>
+<li><code>hlen(name)</code><br> 获取name对应的hash中键值对的个数 </li>
+<li><code>hkeys(name)</code><br> 获取name对应的hash中键值对的个数 </li>
+<li><code>hvals(name)</code><br>获取name对应的hash中所有的value的值 </li>
+<li><code>hexists(name, key)</code><br> 检查name对应的hash是否存在当前传入的key </li>
+<li><code>hdel(name,*keys)</code><br> 将name对应的hash中指定key的键值对删除 </li>
+<li><code>hincrby(name, key, amount=1)</code><br>自增name对应的hash中的指定key的值，不存在则创建key=amount<br>参数：<pre><code>name，redis中的name
+key， hash对应的key
+amount，自增数（整数）</code></pre></li>
+<li><code>hincrbyfloat(name, key, amount=1.0)</code><br>自增name对应的hash中的指定key的值，不存在则创建key=amount<br>参数：<pre><code>name，redis中的name
+key， hash对应的key
+amount，自增数（浮点数）</code></pre>自增name对应的hash中的指定key的值，不存在则创建key=amount</li>
+<li><code>hscan(name, cursor=0, match=None, count=None)</code><br>增量式迭代获取还可以进行模糊匹配（只有通配符*号），对于数据大的数据非常有用，hscan可以实现分片的获取数据，并非一次性将数据全部获取完，从而放置内存被撑爆<br>参数：<br>   name，redis的name<br>   cursor，游标（基于游标分批取获取数据）<br>   match，匹配指定key，默认None 表示所有的key<br>   count，每次分片最少获取个数，默认None表示采用Redis的默认分片个数<br>如：<br>   第一次：cursor1, data1 = r.hscan(‘xx’, cursor=0, match=None, count=None)<br>   第二次：cursor2, data1 = r.hscan(‘xx’, cursor=cursor1, match=None, count=None)<br>   …<br>   直到返回值cursor的值为0时，表示数据已经通过分片获取完毕</li>
+<li><code>hscan_iter(name, match=None, count=None)</code><br>利用yield封装hscan创建生成器，实现分批去redis中获取数据<br>参数：<pre><code>match，匹配指定key，默认None 表示所有的key
+count，每次分片最少获取个数，默认None表示采用Redis的默认分片个数</code></pre>如：<pre><code>for item in r.hscan_iter(&apos;xx&apos;):
+     print item</code></pre></li>
+</ol>
+<h2 id="List操作"><a href="#List操作" class="headerlink" title="List操作"></a>List操作</h2><p> List操作，redis中的List在在内存中按照一个name对应一个List来存储，跟python里面的List一样一样的。如图：<br><img alt data-src="/2019/11/21/%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93Redis/4.jpg" class="lozad"></p>
+<p><strong>原生redis的List操作命令</strong>：</p>
+<p>通过string可以看出redis-py的操作都是参考原生进行的，所以看下面的API就可以大概知道原生redis怎么写</p>
+<p><strong>redis-py中List的API</strong>：</p>
+<ol>
+<li><code>lpush(name,values)</code><br>在name对应的list中添加元素，每个新的元素都添加到列表的最左边<br>如：<pre><code>r.lpush(&apos;oo&apos;, 11,22,33)
+保存顺序为: 33,22,11</code></pre>扩展：<pre><code>rpush(name, values) 表示从右向左操作</code></pre></li>
+<li><code>lpushx(name,value)</code><br>在name对应的list中添加元素，只有name已经存在时，值添加到列表的最左边<br>更多：<pre><code>rpushx(name, value) 表示从右向左操作</code></pre></li>
+<li><code>llen(name)</code><br> name对应的list元素的个数 </li>
+<li><code>linsert(name, where, refvalue, value))</code><br>在name对应的列表的某一个值前或后插入一个新值<br>参数：<pre><code>name，redis的name
+where，BEFORE或AFTER
+refvalue，标杆值，即：在它前后插入数据
+value，要插入的数据</code></pre></li>
+<li><code>r.lset(name, index, value)</code><br>对name对应的list中的某一个索引位置重新赋值<br>参数：<pre><code>name，redis的name
+index，list的索引位置
+value，要设置的值</code></pre></li>
+<li><code>r.lrem(name, value, num)</code><br>在name对应的list中删除指定的值<br>参数：<pre><code>name，redis的name
+value，要删除的值
+num，  num=0，删除列表中所有的指定值；
+       num=2,从前到后，删除2个；
+       num=-2,从后向前，删除2个</code></pre></li>
+<li><code>lpop(name)</code><br>在name对应的列表的左侧获取第一个元素并在列表中移除，返回值则是第一个元素<br>更多：<pre><code>rpop(name) 表示从右向左操作</code></pre></li>
+<li><code>lindex(name, index)</code><br> 在name对应的列表中根据索引获取列表元素 </li>
+<li><code>lrange(name, start, end)</code><br>在name对应的列表分片获取数据<br>参数：<pre><code>name，redis的name
+start，索引的起始位置
+end，索引结束位置</code></pre></li>
+<li><code>ltrim(name, start, end)</code><br>在name对应的列表中移除没有在start-end索引之间的值，去头尾<br>参数：<pre><code>name，redis的name
+start，索引的起始位置
+end，索引结束位置</code></pre></li>
+<li><code>rpoplpush(src, dst)</code><br>从一个列表取出最右边的元素，同时将其添加至另一个列表的最左边<br>参数：<pre><code>src，要取数据的列表的name
+dst，要添加数据的列表的name</code></pre></li>
+<li><code>blpop(keys, timeout)</code><br>将多个列表排列，按照从左到右去pop对应列表的元素<br>参数：<pre><code>keys，redis的name的集合
+timeout，超时时间，当元素所有列表的元素获取完之后，阻塞等待列表内有数据的时间（秒）, 0 表示永远阻塞</code></pre>更多：<pre><code>r.brpop(keys, timeout)，从右向左获取数据</code></pre></li>
+<li><code>brpoplpush(src, dst, timeout=0)</code><br>从一个列表的右侧移除一个元素并将其添加到另一个列表的左侧<br>参数：<pre><code>src，取出并要移除元素的列表对应的name
+dst，要插入元素的列表对应的name
+timeout，当src对应的列表中没有数据时，阻塞等待其有数据的超时时间（秒），0 表示永远阻塞</code></pre></li>
+</ol>
+<h3 id="set集合操作"><a href="#set集合操作" class="headerlink" title="set集合操作"></a>set集合操作</h3><p> Set操作，跟python中的集合又是一样一样的，Set集合就是不允许重复的列表 ，一般集合是无序的（没有索引），但是redis中也给我们提供了有序的集合！</p>
+<p><strong>原生redis的Set操作命令</strong>：</p>
+<p>通过string可以看出redis-py的操作都是参考原生进行的，所以看下面的API就可以大概知道原生redis怎么写</p>
+<p><strong>redis-py中Set的API</strong>：</p>
+<ol>
+<li><code>sadd(name,values)</code><br>name对应的集合中添加元素 </li>
+<li><code>scard(name)</code><br> 获取name对应的集合中元素个数 </li>
+<li><code>sdiff(keys, *args)</code><br> 求差集(集合1有集合2没有的集合元素)，在第一个name对应的集合中且不在其他name对应的集合的元素集合 </li>
+<li><code>sdiffstore(dest, keys, *args</code><br> 获取第一个name对应的集合中且不在其他name对应的集合，再将其新加入到dest对应的集合中 </li>
+<li><code>sinter(keys, *args)</code><br>获取多个name对应集合的交集 </li>
+<li><code>sinterstore(dest, keys, *args)</code><br> 获取多个name对应集合的交集，再将其加入到dest对应的集合中 </li>
+<li><code>sismember(name, value)</code><br> 检查value是否是name对应的集合的成员 </li>
+<li><code>smembers(name)</code><br> 获取name对应的集合的所有成员 </li>
+<li><code>smove(src, dst, value)</code><br> 某个成员从一个集合中移动到另外一个集合 </li>
+<li><code>spop(name)</code><br> 从集合的右侧（尾部）移除一个成员，并将其返回 </li>
+<li><code>srandmember(name, numbers)</code><br> 从name对应的集合中随机获取 numbers 个元素 ，抽奖程序可以用到</li>
+<li><code>srem(name, values)</code><br> 在name对应的集合中删除某些值 </li>
+<li><code>sunion(keys, *args)</code><br> 获取多个name对应的集合的并集 </li>
+<li><code>sunionstore(dest,keys, *args)</code><br> 获取多个name对应的集合的并集，并将结果保存到dest对应的集合中 </li>
+<li><code>sscan(name, cursor=0, match=None, count=None)
+sscan_iter(name, match=None, count=None)</code><br> 同字符串的操作，用于增量迭代分批获取元素，避免内存消耗太大 </li>
+</ol>
+<p>有序集合，在集合的基础上，为每元素排序；<u>元素的排序需要根据另外一个值来进行比较</u>，所以，对于有序集合，每一个元素有两个值，即：值和分数，分数专门用来做排序。 </p>
+<ol start="16">
+<li><code>zadd(name, *args, **kwargs)</code><br>在name对应的有序集合中添加元素，使用方法：zadd(name,’value1’,分数,value2,分数)<br>如：<pre><code>zadd(&apos;zz&apos;, &apos;n1&apos;, 1, &apos;n2&apos;, 2)  
+或
+zadd(&apos;zz&apos;, n1=11, n2=22)</code></pre></li>
+<li><code>zcard(name)</code><br> 获取name对应的有序集合元素的数量 </li>
+<li><code>zcount(name, min, max)</code><br> 获取name对应的有序集合中分数 在 [min,max] 之间的个数 </li>
+<li><code>zincrby(name, value, amount)</code><br> 自增name对应的有序集合的 name 对应的分数 </li>
+<li><code>r.zrange( name, start, end, desc=False, withscores=False, score_cast_func=float)</code><br>按照索引范围获取name对应的有序集合的元素<br>参数：<pre><code>name，redis的name
+start，有序集合索引起始位置（非分数）
+end，有序集合索引结束位置（非分数）
+desc，排序规则，默认按照分数从小到大排序
+withscores，是否获取元素的分数，默认只获取元素的值
+score_cast_func，对分数进行数据转换的函数</code></pre>更多：<pre><code>从大到小排序
+zrevrange(name, start, end, withscores=False, score_cast_func=float)
+按照分数范围获取name对应的有序集合的元素
+zrangebyscore(name, min, max, start=None, num=None, withscores=False, score_cast_func=float)
+从大到小排序
+zrevrangebyscore(name, max, min, start=None, num=None, withscores=False, score_cast_func=float)</code></pre></li>
+<li><code>zrank(name, value)</code><br>获取某个值在 name对应的有序集合中的排行（从 0 开始）<br>更多：<pre><code>zrevrank(name, value)，从大到小排序</code></pre></li>
+<li><code>zrem(name, values)</code><br>删除name对应的有序集合中值是values的成员<br>如：zrem(‘zz’, [‘s1’, ‘s2’])</li>
+<li><code>zremrangebyrank(name, min, max)</code><br> 根据排行范围删除 </li>
+<li><code>zremrangebyscore(name, min, max)</code><br> 根据分数范围删除 </li>
+<li><code>zscore(name, value)</code><br> 获取name对应有序集合中 value 对应的分数 </li>
+<li><code>zinterstore(dest, keys, aggregate=None)</code><br>获取两个有序集合的交集，如果遇到相同值不同分数，则按照aggregate进行操作<br>aggregate的值为:  SUM  MIN  MAX</li>
+<li><code>zunionstore(dest, keys, aggregate=None)</code><br>获取两个有序集合的并集，如果遇到相同值不同分数，则按照aggregate进行操作<br>aggregate的值为:  SUM  MIN  MAX</li>
+<li><code>zscan(name, cursor=0, match=None, count=None, score_cast_func=float)
+zscan_iter(name, match=None, count=None,score_cast_func=float)</code><br> 同字符串相似，相较于字符串新增score_cast_func，用来对分数进行操作 </li>
+</ol>
+<h3 id="redis其他常用操作"><a href="#redis其他常用操作" class="headerlink" title="redis其他常用操作"></a>redis其他常用操作</h3><p><strong>redis-py中其他的API</strong>：</p>
+<ol>
+<li><code>delete(*names)</code><br>根据删除redis中的任意数据类型<br>原生redis命令: <code>del key</code></li>
+<li><code>exists(name)</code><br>检测redis的name是否存在 </li>
+<li><code>keys(pattern=&#39;*&#39;)</code><br>根据模型获取redis的name<br>更多：<pre><code>KEYS * 匹配数据库中所有 key 。
+KEYS h?llo 匹配 hello ， hallo 和 hxllo 等。
+KEYS h*llo 匹配 hllo 和 heeeeello 等。
+KEYS h[ae]llo 匹配 hello 和 hallo ，但不匹配 hillo</code></pre></li>
+<li><code>expire(name ,time)</code><br> 为某个redis的某个name设置超时时间 </li>
+<li><code>rename(src, dst)</code><br> 对redis的name重命名为<br>参数：<pre><code>src：原name
+dst：新name</code></pre></li>
+<li><code>move(name, db))</code><br>将redis的某个值移动到指定的db下 ,如果db下已经存在该name则不执行<br>redis是一个公共的缓存db，有可能不同的两个程序往redis存了同name的数据，那这就造成了混乱了。所以redis可以生成多个独立的互不影响的内存空间即db，让不同的进程的数据存储到不同的db，那就不会相互影响了。<br>PS:redis最多只能支持16个db。默认是在db0 如果想要切换db可以使用<code>select</code>命令<pre><code>如:`select 1`表示切换到db1</code></pre></li>
+<li><code>randomkey()</code><br> 随机获取一个redis的name（不删除） </li>
+<li><code>type(name)</code><br> 获取name对应值的类型 </li>
+<li><code>scan(cursor=0, match=None, count=None)
+scan_iter(match=None, count=None)</code><br> 同字符串操作，用于增量迭代获取key </li>
+</ol>
+<h3 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h3><p>redis-py默认在执行每次请求都会创建（连接池申请连接）和断开（归还连接池）一次连接操作，如果想要在<u>一次请求中指定多个命令</u>，则可以使用pipline实现一次请求指定多个命令，并且默认情况下一次pipline 是原子性操作（类似事务，要么全部成功，要么全部执行失败）。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding:utf-8 -*-</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> redis</span><br><span class="line"> </span><br><span class="line">pool = redis.ConnectionPool(host=<span class="string">'10.211.55.4'</span>, port=<span class="number">6379</span>)</span><br><span class="line"> </span><br><span class="line">r = redis.Redis(connection_pool=pool)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># pipe = r.pipeline(transaction=False)</span></span><br><span class="line">pipe = r.pipeline(transaction=<span class="literal">True</span>) <span class="comment">#transaction=开启事务操作</span></span><br><span class="line"> </span><br><span class="line">pipe.set(<span class="string">'name'</span>, <span class="string">'deehuang'</span>)</span><br><span class="line">pipe.set(<span class="string">'role'</span>, <span class="string">'headsomeboy'</span>)</span><br><span class="line"> </span><br><span class="line">pipe.execute()</span><br></pre></td></tr></table></figure>
+
+<h3 id="发布订阅"><a href="#发布订阅" class="headerlink" title="发布订阅"></a>发布订阅</h3><p><img alt data-src="/2019/11/21/%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93Redis/5.jpg" class="lozad"></p>
+<p>redis的发布订阅功能很简单，一边发送消息，另外一边接收消息。如果在线就能接收到消息，不在线就接收不到。</p>
+<p>发布者：服务器</p>
+<p>订阅者：Dashboad和数据处理</p>
+<p>Demo如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> redis</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RedisHelper</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.__conn = redis.Redis(host=<span class="string">'10.211.55.4'</span>)</span><br><span class="line">        self.chan_sub = <span class="string">'fm104.5'</span>  <span class="comment">#订阅频道</span></span><br><span class="line">        self.chan_pub = <span class="string">'fm104.5'</span>  <span class="comment">#发布频道</span></span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">public</span><span class="params">(self, msg)</span>:</span></span><br><span class="line">        <span class="string">"""发布"""</span></span><br><span class="line">        self.__conn.publish(self.chan_pub, msg)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">subscribe</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">"""订阅"""</span></span><br><span class="line">        pub = self.__conn.pubsub() <span class="comment">#打开收音机</span></span><br><span class="line">        pub.subscribe(self.chan_sub)  <span class="comment">#调整频道</span></span><br><span class="line">        pub.parse_response()  <span class="comment">#准备监听</span></span><br><span class="line">        <span class="keyword">return</span> pub</span><br></pre></td></tr></table></figure>
+
+<p>订阅者：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> RedisHelper <span class="keyword">import</span> RedisHelper</span><br><span class="line"> </span><br><span class="line">obj = RedisHelper()</span><br><span class="line">redis_sub = obj.subscribe() </span><br><span class="line"> </span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    msg= redis_sub.parse_response()  <span class="comment">#没有消息接收时是阻塞的</span></span><br><span class="line">    <span class="keyword">print</span> (<span class="string">"recv:"</span>,msg)</span><br></pre></td></tr></table></figure>
+
+<p>发布者:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> RedisHelper <span class="keyword">import</span> RedisHelper</span><br><span class="line"> </span><br><span class="line">obj = RedisHelper()</span><br><span class="line">obj.public(<span class="string">'hello'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>更多的redis命令可以参考<a href="http://doc.redisfans.com/" target="_blank" rel="noopener">这里</a></p>
+<h3 id="补充：redis的定期持久化"><a href="#补充：redis的定期持久化" class="headerlink" title="补充：redis的定期持久化"></a>补充：redis的定期持久化</h3><p>redis自动的会将修改的key-value进行周期的持久化。这个周期可以在配置文件中设置：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">进入配置文件</span><br><span class="line">vim /etc/redis/redis.conf</span><br><span class="line"></span><br><span class="line">找到参数 save</span><br><span class="line">默认是 save 900 1   表示 900秒存一次</span><br></pre></td></tr></table></figure>
+
+<p>如果想手动的给数据进行持久化可以使用命令:</p>
+<p><code>save</code>  就完成了手动刷磁盘进行数据持久化</p>
+<blockquote>
+<p><a href="https://www.cnblogs.com/alex3714/articles/5248247.html" target="_blank" rel="noopener">参考文献1</a><br><a href="https://www.cnblogs.com/alex3714/articles/6217453.html" target="_blank" rel="noopener">参考文献2</a></p>
+</blockquote>
+</div></article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/python/">python    </a><a class="post-meta__tags" href="/tags/%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E5%BA%93/">缓存数据库    </a><a class="post-meta__tags" href="/tags/Redis/">Redis    </a></div><div class="post_share"><div class="social-share" data-image="/img/cover_default3.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button"><i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="lozad post-qr-code__img" src="/img/wechat.jpg"><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="lozad post-qr-code__img" src="/img/alipay.jpg"><div class="post-qr-code__desc">支付寶</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull-left"><a href="/2019/11/21/Celery/"><img class="prev_cover lozad" data-src="/img/cover_default3.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="label">上一篇</div><div class="prev_info"><span>Celery</span></div></a></div><div class="next-post pull-right"><a href="/2019/11/19/Tornado%E6%A1%86%E6%9E%B6%E8%BF%9B%E9%98%B6/"><img class="next_cover lozad" data-src="/img/tornado_cover.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="label">下一篇</div><div class="next_info"><span>Tornado框架进阶</span></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2019/11/19/Tornado框架进阶/" title="Tornado框架进阶"><img class="relatedPosts_cover lozad"data-src="/img/tornado_cover.jpg"><div class="relatedPosts_title">Tornado框架进阶</div></a></div><div class="relatedPosts_item"><a href="/2019/11/16/Tornado框架入门/" title="Tornado框架入门"><img class="relatedPosts_cover lozad"data-src="/img/tornado_cover.jpg"><div class="relatedPosts_title">Tornado框架入门</div></a></div><div class="relatedPosts_item"><a href="/2019/11/21/Celery/" title="Celery"><img class="relatedPosts_cover lozad"data-src="/img/cover_default3.jpg"><div class="relatedPosts_title">Celery</div></a></div><div class="relatedPosts_item"><a href="/2019/11/18/WebSocket/" title="WebSocket"><img class="relatedPosts_cover lozad"data-src="/img/cover_default3.jpg"><div class="relatedPosts_title">WebSocket</div></a></div></div><div class="clear_both"></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fa fa-comments fa-fw" aria-hidden="true"></i><span> 评论</span></div><div id="lv-container" data-id="city" data-uid="MTAyMC80NzI1MC8yMzc1MA=="><script>(function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+})(document, 'script');</script></div></div></div></div><footer style="background-image: url(/img/cover_default3.jpg)"><div id="footer"><div class="copyright">&copy;2019 By Rhubarb C</div><div class="framework-info"><span>驱动 </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换">繁</a><i class="nightshift fa fa-moon-o" id="nightshift" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fa fa-comments">  </i></a><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="/js/third-party/fireworks.js"></script><script src="/js/nightshift.js"></script><script id="ribbon" src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/js/piao.js"></script><script color="0,0,255" opacity="0.7" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/gh/jerryc127/CDN/js/canvas-nest.js"></script><script src="/js/activate-power-mode.js"></script><script>POWERMODE.colorful = true; // make power mode colorful
+POWERMODE.shake = true; // turn off shake
+document.body.addEventListener('input', POWERMODE);
+</script><script src="/js/tw_cn.js"></script><script>translateInitilization()
+
+</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@1.2.2/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script><script>const observer = lozad(); // lazy loads elements with default selector as '.lozad'
+observer.observe();
+</script></body></html>
